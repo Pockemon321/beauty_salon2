@@ -1,0 +1,50 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ master.name }} - Beauty Salon{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-4">
+        {% if master.photo %}
+        <img src="{{ master.photo.url }}" class="img-fluid rounded mb-4" alt="{{ master.name }}">
+        {% endif %}
+    </div>
+    <div class="col-md-8">
+        <h1 class="mb-4">{{ master.name }}</h1>
+        <div class="card mb-4">
+            <div class="card-body">
+                <p class="card-text">{{ master.description }}</p>
+                
+                <h5 class="mt-4">Услуги мастера:</h5>
+                <div class="row">
+                    {% for service in master.services.all %}
+                    <div class="col-md-6 mb-3">
+                        <div class="card">
+                            <div class="card-body">
+                                <h6 class="card-title">{{ service.name }}</h6>
+                                <p class="card-text">
+                                    <small>
+                                        Стоимость: {{ service.price }} руб.<br>
+                                        Длительность: {{ service.duration }} мин.
+                                    </small>
+                                </p>
+                                {% if user.is_authenticated %}
+                                <a href="{% url 'appointment_create' %}?master={{ master.pk }}&service={{ service.pk }}" 
+                                   class="btn btn-sm btn-primary">Записаться</a>
+                                {% else %}
+                                <a href="{% url 'login' %}" class="btn btn-sm btn-primary">Войдите для записи</a>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                    {% empty %}
+                    <div class="col-12">
+                        <p>У мастера пока нет доступных услуг.</p>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

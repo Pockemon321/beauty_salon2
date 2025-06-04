@@ -1,0 +1,34 @@
+{% extends 'base.html' %}
+
+{% block title %}Запись #{{ appointment.pk }} - Beauty Salon{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="card">
+        <div class="card-header">
+            <h2>Детали записи</h2>
+        </div>
+        <div class="card-body">
+            <h5 class="card-title">Услуга: {{ appointment.service.name }}</h5>
+            <p class="card-text">
+                <strong>Мастер:</strong> {{ appointment.master.name }}<br>
+                <strong>Дата:</strong> {{ appointment.date }}<br>
+                <strong>Время:</strong> {{ appointment.time }}<br>
+                <strong>Статус:</strong> {{ appointment.get_status_display }}<br>
+                {% if appointment.notes %}
+                    <strong>Дополнительные пожелания:</strong><br>
+                    {{ appointment.notes }}
+                {% endif %}
+            </p>
+
+            <div class="d-flex gap-2">
+                {% if appointment.status in 'pending,confirmed' %}
+                    <a href="{% url 'appointment_edit' appointment.pk %}" class="btn btn-primary">Редактировать</a>
+                    <a href="{% url 'appointment_cancel' appointment.pk %}" class="btn btn-danger">Отменить запись</a>
+                {% endif %}
+                <a href="{% url 'appointment_list' %}" class="btn btn-secondary">К списку записей</a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

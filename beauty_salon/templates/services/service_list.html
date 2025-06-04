@@ -1,0 +1,29 @@
+{% extends 'base.html' %}
+
+{% block title %}Услуги - Beauty Salon{% endblock %}
+
+{% block content %}
+<h1 class="mb-4">Наши услуги</h1>
+
+<div class="row">
+    {% for service in services %}
+    <div class="col-md-4 mb-4">
+        <div class="card h-100">
+            <div class="card-body">
+                <h5 class="card-title">{{ service.name }}</h5>
+                <p class="card-text">{{ service.description|truncatewords:20 }}</p>
+                <p class="card-text">
+                    <strong>Стоимость:</strong> {{ service.price }} руб.<br>
+                    <strong>Длительность:</strong> {{ service.duration }} мин.
+                </p>
+                <a href="{% url 'service_detail' service.pk %}" class="btn btn-primary">Подробнее</a>
+            </div>
+        </div>
+    </div>
+    {% empty %}
+    <div class="col-12">
+        <p>На данный момент услуги не добавлены.</p>
+    </div>
+    {% endfor %}
+</div>
+{% endblock %}

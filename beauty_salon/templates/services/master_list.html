@@ -1,0 +1,37 @@
+{% extends 'base.html' %}
+
+{% block title %}Мастера - Beauty Salon{% endblock %}
+
+{% block content %}
+<h1 class="mb-4">Наши мастера</h1>
+
+<div class="row">
+    {% for master in masters %}
+    <div class="col-md-4 mb-4">
+        <div class="card h-100">
+            {% if master.photo %}
+            <img src="{{ master.photo.url }}" class="card-img-top" alt="{{ master.name }}">
+            {% endif %}
+            <div class="card-body">
+                <h5 class="card-title">{{ master.name }}</h5>
+                <p class="card-text">{{ master.description|truncatewords:20 }}</p>
+                <h6>Услуги:</h6>
+                <ul class="list-unstyled">
+                    {% for service in master.services.all|slice:":3" %}
+                    <li>{{ service.name }}</li>
+                    {% endfor %}
+                    {% if master.services.count > 3 %}
+                    <li>...</li>
+                    {% endif %}
+                </ul>
+                <a href="{% url 'master_detail' master.pk %}" class="btn btn-primary">Подробнее</a>
+            </div>
+        </div>
+    </div>
+    {% empty %}
+    <div class="col-12">
+        <p>На данный момент мастера не добавлены.</p>
+    </div>
+    {% endfor %}
+</div>
+{% endblock %}

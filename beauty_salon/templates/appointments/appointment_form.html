@@ -1,0 +1,70 @@
+{% extends 'base.html' %}
+
+{% block title %}Запись на услугу - Beauty Salon{% endblock %}
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const serviceSelect = document.getElementById('service');
+    const masterSelect = document.getElementById('master');
+    
+    serviceSelect.addEventListener('change', function() {
+        const serviceId = this.value;
+        if (serviceId) {
+            window.location.href = `{% url 'appointment_create' %}?service=${serviceId}`;
+        }
+    });
+});
+</script>
+{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h1 class="mb-4">Запись на услугу</h1>
+    
+    <form method="post" class="card p-4">
+        {% csrf_token %}
+        
+        <div class="mb-3">
+            <label for="service" class="form-label">Выберите услугу</label>
+            <select name="service" id="service" class="form-select" required>
+                <option value="">-- Выберите услугу --</option>
+                {% for service in services %}
+                <option value="{{ service.pk }}" {% if selected_service == service.pk|stringformat:"s" %}selected{% endif %}>
+                    {{ service.name }} ({{ service.duration }} мин., {{ service.price }} руб.)
+                </option>
+                {% endfor %}
+            </select>
+        </div>
+
+        <div class="mb-3">
+            <label for="master" class="form-label">Выберите мастера</label>
+            <select name="master" id="master" class="form-select" required>
+                <option value="">-- Выберите мастера --</option>
+                {% for master in masters %}
+                <option value="{{ master.pk }}" {% if selected_master == master.pk|stringformat:"s" %}selected{% endif %}>
+                    {{ master.name }}
+                </option>
+                {% endfor %}
+            </select>
+        </div>
+
+        <div class="mb-3">
+            <label for="date" class="form-label">Выберите дату</label>
+            <input type="date" name="date" id="date" class="form-control" required>
+        </div>
+
+        <div class="mb-3">
+            <label for="time" class="form-label">Выберите время</label>
+            <input type="time" name="time" id="time" class="form-control" required>
+        </div>
+
+        <div class="mb-3">
+            <label for="notes" class="form-label">Дополнительные пожелания</label>
+            <textarea name="notes" id="notes" class="form-control" rows="3"></textarea>
+        </div>
+
+        <button type="submit" class="btn btn-primary">Записаться</button>
+    </form>
+</div>
+{% endblock %}

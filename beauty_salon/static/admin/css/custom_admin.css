@@ -1,0 +1,81 @@
+/* Стили для бейджей статусов */
+.badge {
+    padding: 5px 10px;
+    border-radius: 4px;
+    font-weight: 500;
+}
+
+.bg-warning {
+    background-color: #ffc107;
+    color: #000;
+}
+
+.bg-info {
+    background-color: #0dcaf0;
+    color: #000;
+}
+
+.bg-success {
+    background-color: #198754;
+    color: #fff;
+}
+
+.bg-danger {
+    background-color: #dc3545;
+    color: #fff;
+}
+
+/* Стили для ссылок */
+.field-client_link a,
+.field-service_link a,
+.field-master_link a {
+    color: #0d6efd;
+    text-decoration: none;
+}
+
+.field-client_link a:hover,
+.field-service_link a:hover,
+.field-master_link a:hover {
+    text-decoration: underline;
+}
+
+/* Улучшенные стили для списка */
+#changelist table thead th {
+    background: #f8f9fa;
+    color: #212529;
+    font-weight: 600;
+}
+
+#changelist table tbody tr:hover {
+    background-color: #f8f9fa;
+}
+
+/* Стили для полей в форме */
+.form-row {
+    padding: 10px 0;
+}
+
+.form-row label {
+    font-weight: 500;
+}
+
+/* Стили для групп полей */
+.module h2 {
+    background: #f8f9fa;
+    color: #212529;
+    padding: 8px;
+    font-size: 14px;
+    font-weight: 600;
+}
+
+/* Стили для кнопок действий */
+.submit-row {
+    background: #f8f9fa;
+    padding: 12px 14px;
+    margin: 0 0 20px;
+    border-radius: 4px;
+}
+
+.submit-row input {
+    margin: 0 0 0 8px;
+} 

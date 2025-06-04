@@ -1,0 +1,233 @@
+{% extends "base.html" %}
+
+{% block title %}Регистрация - Beauty Salon{% endblock %}
+
+{% block extra_css %}
+<style>
+    .register-container {
+        min-height: calc(100vh - 300px);
+        display: flex;
+        align-items: center;
+    }
+    .register-card {
+        border: none;
+        border-radius: 15px;
+        box-shadow: 0 0 20px rgba(0,0,0,0.1);
+        transition: transform 0.3s ease;
+    }
+    .register-card:hover {
+        transform: translateY(-5px);
+    }
+    .register-header {
+        background: linear-gradient(45deg, #ff69b4, #ff4aa1);
+        color: white;
+        border-radius: 15px 15px 0 0;
+        padding: 2rem;
+    }
+    .form-control {
+        border-radius: 10px;
+        padding: 0.8rem 1rem;
+        border: 1px solid #e0e0e0;
+        transition: all 0.3s ease;
+    }
+    .form-control:focus {
+        box-shadow: 0 0 0 0.2rem rgba(255, 105, 180, 0.25);
+        border-color: #ff69b4;
+    }
+    .btn-register {
+        background: linear-gradient(45deg, #ff69b4, #ff4aa1);
+        border: none;
+        border-radius: 10px;
+        padding: 0.8rem 2rem;
+        font-weight: 600;
+        transition: all 0.3s ease;
+    }
+    .btn-register:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(255, 105, 180, 0.3);
+    }
+    .form-label {
+        font-weight: 500;
+        color: #555;
+    }
+    .login-link {
+        color: #ff69b4;
+        text-decoration: none;
+        transition: all 0.3s ease;
+    }
+    .login-link:hover {
+        color: #ff4aa1;
+        text-decoration: underline;
+    }
+    .error-message {
+        color: #dc3545;
+        font-size: 0.875rem;
+        margin-top: 0.25rem;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="register-container py-5">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-md-8 col-lg-6">
+                <div class="register-card">
+                    <div class="register-header text-center">
+                        <h2 class="mb-0">Добро пожаловать!</h2>
+                        <p class="mb-0 mt-2">Создайте аккаунт для записи в салон красоты</p>
+                    </div>
+                    <div class="card-body p-4">
+                        <form method="post" class="needs-validation" novalidate>
+                            {% csrf_token %}
+                            
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label for="id_first_name" class="form-label">Имя</label>
+                                    <input type="text" name="first_name" id="id_first_name" 
+                                           class="form-control {% if form.first_name.errors %}is-invalid{% endif %}"
+                                           value="{{ form.first_name.value|default:'' }}" required>
+                                    {% if form.first_name.errors %}
+                                        <div class="error-message">{{ form.first_name.errors.0 }}</div>
+                                    {% endif %}
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label for="id_last_name" class="form-label">Фамилия</label>
+                                    <input type="text" name="last_name" id="id_last_name" 
+                                           class="form-control {% if form.last_name.errors %}is-invalid{% endif %}"
+                                           value="{{ form.last_name.value|default:'' }}" required>
+                                    {% if form.last_name.errors %}
+                                        <div class="error-message">{{ form.last_name.errors.0 }}</div>
+                                    {% endif %}
+                                </div>
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="id_email" class="form-label">Email</label>
+                                <input type="email" name="email" id="id_email" 
+                                       class="form-control {% if form.email.errors %}is-invalid{% endif %}"
+                                       value="{{ form.email.value|default:'' }}" required>
+                                {% if form.email.errors %}
+                                    <div class="error-message">{{ form.email.errors.0 }}</div>
+                                {% endif %}
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="id_phone" class="form-label">Телефон</label>
+                                <input type="tel" name="phone" id="id_phone" 
+                                       class="form-control {% if form.phone.errors %}is-invalid{% endif %}"
+                                       value="{{ form.phone.value|default:'' }}" required>
+                                {% if form.phone.errors %}
+                                    <div class="error-message">{{ form.phone.errors.0 }}</div>
+                                {% endif %}
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="id_password1" class="form-label">Пароль</label>
+                                <input type="password" name="password1" id="id_password1" 
+                                       class="form-control {% if form.password1.errors %}is-invalid{% endif %}"
+                                       required>
+                                {% if form.password1.errors %}
+                                    <div class="error-message">{{ form.password1.errors.0 }}</div>
+                                {% endif %}
+                            </div>
+
+                            <div class="mb-4">
+                                <label for="id_password2" class="form-label">Подтверждение пароля</label>
+                                <input type="password" name="password2" id="id_password2" 
+                                       class="form-control {% if form.password2.errors %}is-invalid{% endif %}"
+                                       required>
+                                {% if form.password2.errors %}
+                                    <div class="error-message">{{ form.password2.errors.0 }}</div>
+                                {% endif %}
+                            </div>
+
+                            <div class="d-grid">
+                                <button type="submit" class="btn btn-register text-white">
+                                    Зарегистрироваться
+                                </button>
+                            </div>
+                        </form>
+
+                        <div class="text-center mt-4">
+                            <p class="mb-0">Уже есть аккаунт? 
+                                <a href="{% url 'login' %}" class="login-link">Войти</a>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const phoneInput = document.getElementById('id_phone');
+        
+        // Функция для форматирования номера телефона
+        function formatPhoneNumber(input) {
+            // Удаляем все нецифровые символы
+            let number = input.value.replace(/\D/g, '');
+            
+            // Ограничиваем длину до 11 цифр (включая код страны)
+            number = number.substring(0, 11);
+            
+            // Форматируем номер
+            let formattedNumber = '';
+            if (number.length > 0) {
+                formattedNumber = '+7';
+                if (number.length > 1) {
+                    formattedNumber += ' (' + number.substring(1, 4);
+                    if (number.length > 4) {
+                        formattedNumber += ') ' + number.substring(4, 7);
+                        if (number.length > 7) {
+                            formattedNumber += '-' + number.substring(7, 9);
+                            if (number.length > 9) {
+                                formattedNumber += '-' + number.substring(9, 11);
+                            }
+                        }
+                    }
+                }
+            }
+            
+            // Устанавливаем отформатированное значение
+            input.value = formattedNumber;
+        }
+
+        // Обработчик события ввода
+        phoneInput.addEventListener('input', function(e) {
+            formatPhoneNumber(e.target);
+        });
+
+        // Обработчик события вставки
+        phoneInput.addEventListener('paste', function(e) {
+            e.preventDefault();
+            const pastedText = (e.clipboardData || window.clipboardData).getData('text');
+            this.value = pastedText;
+            formatPhoneNumber(this);
+        });
+
+        // Обработчик события фокуса
+        phoneInput.addEventListener('focus', function(e) {
+            if (!this.value) {
+                this.value = '+7';
+            }
+        });
+
+        // Обработчик события потери фокуса
+        phoneInput.addEventListener('blur', function(e) {
+            if (this.value === '+7') {
+                this.value = '';
+            }
+        });
+
+        // Инициализация маски при загрузке страницы
+        if (phoneInput.value) {
+            formatPhoneNumber(phoneInput);
+        }
+    });
+</script>
+{% endblock %}

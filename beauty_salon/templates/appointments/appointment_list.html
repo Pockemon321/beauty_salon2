@@ -1,0 +1,46 @@
+{% extends 'base.html' %}
+
+{% block title %}Мои записи - Beauty Salon{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h1 class="mb-4">Мои записи</h1>
+
+    <div class="mb-4">
+        <a href="{% url 'appointment_create' %}" class="btn btn-primary">Записаться на услугу</a>
+    </div>
+
+    <div class="row">
+        {% for appointment in appointments %}
+        <div class="col-md-6 mb-4">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">{{ appointment.service.name }}</h5>
+                    <p class="card-text">
+                        <strong>Мастер:</strong> {{ appointment.master.name }}<br>
+                        <strong>Дата:</strong> {{ appointment.date }}<br>
+                        <strong>Время:</strong> {{ appointment.time }}<br>
+                        <strong>Статус:</strong> {{ appointment.get_status_display }}
+                    </p>
+                    {% if appointment.notes %}
+                    <p class="card-text"><small>{{ appointment.notes }}</small></p>
+                    {% endif %}
+                    
+                    <div class="btn-group">
+                        <a href="{% url 'appointment_detail' appointment.pk %}" class="btn btn-outline-primary">Подробнее</a>
+                        {% if appointment.status == 'pending' or appointment.status == 'confirmed' %}
+                        <a href="{% url 'appointment_cancel' appointment.pk %}" class="btn btn-outline-danger">Отменить</a>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% empty %}
+        <div class="col-12">
+            <p>У вас пока нет записей на услуги.</p>
+            <a href="{% url 'services' %}" class="btn btn-primary">Посмотреть услуги</a>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,83 @@
+@startuml BeautySalon
+
+' Стили
+skinparam classAttributeIconSize 0
+skinparam class {
+    BackgroundColor White
+    ArrowColor Black
+    BorderColor Black
+}
+
+' Пользователь
+class User {
+    +id: Integer <<PK>>
+    +username: String
+    +email: String
+    +password: String
+    +first_name: String
+    +last_name: String
+    +phone_number: String
+    +is_staff: Boolean
+    +is_active: Boolean
+    +date_joined: DateTime
+}
+
+' Категория услуг
+class ServiceCategory {
+    +id: Integer <<PK>>
+    +name: String
+    +description: Text
+    +image: ImageField
+}
+
+' Услуга
+class Service {
+    +id: Integer <<PK>>
+    +category: ForeignKey
+    +name: String
+    +description: Text
+    +duration: Integer
+    +price: Decimal
+    +image: ImageField
+}
+
+' Мастер
+class Master {
+    +id: Integer <<PK>>
+    +user: OneToOneField
+    +name: String
+    +specialization: String
+    +experience: Integer
+    +photo: ImageField
+    +bio: Text
+}
+
+' Запись
+class Appointment {
+    +id: Integer <<PK>>
+    +client: ForeignKey
+    +service: ForeignKey
+    +master: ForeignKey
+    +date: Date
+    +time: Time
+    +status: CharField
+    +notes: Text
+    +created_at: DateTime
+}
+
+' Связи
+User "1" -- "1" Master : is
+User "1" -- "*" Appointment : makes
+ServiceCategory "1" -- "*" Service : contains
+Service "1" -- "*" Appointment : has
+Master "1" -- "*" Appointment : performs
+
+note right of Appointment::status
+  Status options:
+  - pending
+  - confirmed
+  - completed
+  - cancelled
+end note
+
+@enduml 
