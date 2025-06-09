@@ -5,11 +5,13 @@ from . import views
 urlpatterns = [
     path('register/', views.register, name='register'),
     path('profile/', views.profile, name='profile'),
-    path('login/', auth_views.LoginView.as_view(template_name='users/login.html'), name='login'),
+    path('login/', auth_views.LoginView.as_view(
+        template_name='users/login.html',
+        redirect_authenticated_user=True
+    ), name='login'),
     path('logout/', auth_views.LogoutView.as_view(
         template_name='users/logout.html',
-        next_page=None,
-        http_method_names=['get', 'post']
+        http_method_names=['post', 'get']
     ), name='logout'),
     path('password-reset/', 
          auth_views.PasswordResetView.as_view(template_name='users/password_reset.html'),

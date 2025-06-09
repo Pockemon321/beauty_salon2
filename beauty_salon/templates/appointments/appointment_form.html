@@ -7,64 +7,141 @@
 document.addEventListener('DOMContentLoaded', function() {
     const serviceSelect = document.getElementById('service');
     const masterSelect = document.getElementById('master');
+    const dateInput = document.getElementById('date');
+    const timeInput = document.getElementById('time');
     
+    // Установка минимальной даты на сегодня
+    const today = new Date().toISOString().split('T')[0];
+    dateInput.setAttribute('min', today);
+    
+    // Если есть сохраненные значения в localStorage, восстанавливаем их
+    const savedDate = localStorage.getItem('appointment_date');
+    const savedTime = localStorage.getItem('appointment_time');
+    if (savedDate) dateInput.value = savedDate;
+    if (savedTime) timeInput.value = savedTime;
+    
+    // Сохраняем значения даты и времени при изменении
+    dateInput.addEventListener('change', function() {
+        localStorage.setItem('appointment_date', this.value);
+    });
+    
+    timeInput.addEventListener('change', function() {
+        localStorage.setItem('appointment_time', this.value);
+    });
+
     serviceSelect.addEventListener('change', function() {
         const serviceId = this.value;
         if (serviceId) {
-            window.location.href = `{% url 'appointment_create' %}?service=${serviceId}`;
+            // Сохраняем выбранную услугу
+            localStorage.setItem('selected_service', serviceId);
+            
+            // Получаем список мастеров через AJAX
+            fetch(`{% url 'get_masters_for_service' %}?service_id=${serviceId}`)
+                .then(response => response.json())
+                .then(data => {
+                    masterSelect.innerHTML = '<option value="">-- Выберите мастера --</option>';
+                    data.masters.forEach(master => {
+                        const option = document.createElement('option');
+                        option.value = master.id;
+                        option.textContent = master.name;
+                        masterSelect.appendChild(option);
+                    });
+                    
+                    // Восстанавливаем выбранного мастера, если он был
+                    const savedMaster = localStorage.getItem('selected_master');
+                    if (savedMaster) {
+                        masterSelect.value = savedMaster;
+                    }
+                });
         }
     });
+    
+    masterSelect.addEventListener('change', function() {
+        localStorage.setItem('selected_master', this.value);
+    });
+    
+    // При отправке формы очищаем localStorage
+    document.querySelector('form').addEventListener('submit', function() {
+        localStorage.removeItem('appointment_date');
+        localStorage.removeItem('appointment_time');
+        localStorage.removeItem('selected_service');
+        localStorage.removeItem('selected_master');
+    });
+    
+    // Если есть сохраненная услуга, вызываем событие change
+    const savedService = localStorage.getItem('selected_service');
+    if (savedService) {
+        serviceSelect.value = savedService;
+        serviceSelect.dispatchEvent(new Event('change'));
+    }
 });
 </script>
 {% endblock %}
 
 {% block content %}
-<div class="container">
-    <h1 class="mb-4">Запись на услугу</h1>
+<div class="container animate-fade-in">
+    <h1 class="text-center mb-4">Запись на услугу</h1>
     
-    <form method="post" class="card p-4">
-        {% csrf_token %}
-        
-        <div class="mb-3">
-            <label for="service" class="form-label">Выберите услугу</label>
-            <select name="service" id="service" class="form-select" required>
-                <option value="">-- Выберите услугу --</option>
-                {% for service in services %}
-                <option value="{{ service.pk }}" {% if selected_service == service.pk|stringformat:"s" %}selected{% endif %}>
-                    {{ service.name }} ({{ service.duration }} мин., {{ service.price }} руб.)
-                </option>
-                {% endfor %}
-            </select>
-        </div>
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <form method="post" class="appointment-form animate-scale-in">
+                {% csrf_token %}
+                
+                {% if form.errors %}
+                <div class="alert alert-danger">
+                    <h4 class="alert-heading">Пожалуйста, исправьте следующие ошибки:</h4>
+                    {{ form.errors }}
+                </div>
+                {% endif %}
+                
+                <div class="mb-4">
+                    <label for="service" class="form-label">Выберите услугу</label>
+                    <select name="service" id="service" class="form-select" required>
+                        <option value="">-- Выберите услугу --</option>
+                        {% for service in services %}
+                        <option value="{{ service.pk }}" {% if form.service.value|stringformat:"s" == service.pk|stringformat:"s" %}selected{% endif %}>
+                            {{ service.name }} ({{ service.duration }} мин., {{ service.price }} руб.)
+                        </option>
+                        {% endfor %}
+                    </select>
+                </div>
 
-        <div class="mb-3">
-            <label for="master" class="form-label">Выберите мастера</label>
-            <select name="master" id="master" class="form-select" required>
-                <option value="">-- Выберите мастера --</option>
-                {% for master in masters %}
-                <option value="{{ master.pk }}" {% if selected_master == master.pk|stringformat:"s" %}selected{% endif %}>
-                    {{ master.name }}
-                </option>
-                {% endfor %}
-            </select>
-        </div>
+                <div class="mb-4">
+                    <label for="master" class="form-label">Выберите мастера</label>
+                    <select name="master" id="master" class="form-select" required>
+                        <option value="">-- Выберите мастера --</option>
+                        {% if form.master.value %}
+                            {% for master in form.master.field.queryset %}
+                                <option value="{{ master.pk }}" {% if form.master.value|stringformat:"s" == master.pk|stringformat:"s" %}selected{% endif %}>
+                                    {{ master.name }}
+                                </option>
+                            {% endfor %}
+                        {% endif %}
+                    </select>
+                </div>
 
-        <div class="mb-3">
-            <label for="date" class="form-label">Выберите дату</label>
-            <input type="date" name="date" id="date" class="form-control" required>
-        </div>
+                <div class="row mb-4">
+                    <div class="col-md-6">
+                        <label for="date" class="form-label">Выберите дату</label>
+                        <input type="date" name="date" id="date" class="form-control" required value="{{ form.date.value|date:'Y-m-d' }}">
+                    </div>
 
-        <div class="mb-3">
-            <label for="time" class="form-label">Выберите время</label>
-            <input type="time" name="time" id="time" class="form-control" required>
-        </div>
+                    <div class="col-md-6">
+                        <label for="time" class="form-label">Выберите время</label>
+                        <input type="time" name="time" id="time" class="form-control" required value="{{ form.time.value|time:'H:i' }}">
+                    </div>
+                </div>
 
-        <div class="mb-3">
-            <label for="notes" class="form-label">Дополнительные пожелания</label>
-            <textarea name="notes" id="notes" class="form-control" rows="3"></textarea>
-        </div>
+                <div class="mb-4">
+                    <label for="notes" class="form-label">Дополнительные пожелания</label>
+                    <textarea name="notes" id="notes" class="form-control" rows="3" placeholder="Укажите ваши пожелания или особые требования">{{ form.notes.value|default:'' }}</textarea>
+                </div>
 
-        <button type="submit" class="btn btn-primary">Записаться</button>
-    </form>
+                <div class="text-center">
+                    <button type="submit" class="btn btn-primary btn-lg px-5">Записаться</button>
+                </div>
+            </form>
+        </div>
+    </div>
 </div>
 {% endblock %}

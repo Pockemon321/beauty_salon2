@@ -1,0 +1,60 @@
+{% extends 'base.html' %}
+
+{% block title %}О нас - Салон красоты{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row">
+        <div class="col-lg-8 mx-auto">
+            <div class="card shadow">
+                <div class="card-body">
+                    <h1 class="text-center mb-4">О нашем салоне</h1>
+                    
+                    <div class="mb-5">
+                        <h3 class="h4 mb-3">Добро пожаловать в мир красоты и гармонии!</h3>
+                        <p>Наш салон красоты - это место, где каждый клиент получает профессиональный уход и индивидуальный подход. Мы стремимся создать атмосферу комфорта и уюта, чтобы ваше пребывание у нас было максимально приятным.</p>
+                    </div>
+
+                    <div class="mb-5">
+                        <h3 class="h4 mb-3">Наши преимущества:</h3>
+                        <ul class="list-unstyled">
+                            <li class="mb-3">
+                                <i class="fas fa-check-circle text-success me-2"></i>
+                                Профессиональные мастера с большим опытом работы
+                            </li>
+                            <li class="mb-3">
+                                <i class="fas fa-check-circle text-success me-2"></i>
+                                Современное оборудование и качественные материалы
+                            </li>
+                            <li class="mb-3">
+                                <i class="fas fa-check-circle text-success me-2"></i>
+                                Широкий спектр услуг для красоты и здоровья
+                            </li>
+                            <li class="mb-3">
+                                <i class="fas fa-check-circle text-success me-2"></i>
+                                Удобное расположение и комфортная атмосфера
+                            </li>
+                            <li class="mb-3">
+                                <i class="fas fa-check-circle text-success me-2"></i>
+                                Гибкая система скидок и специальные предложения
+                            </li>
+                        </ul>
+                    </div>
+
+                    <div class="mb-5">
+                        <h3 class="h4 mb-3">Наша миссия</h3>
+                        <p>Мы стремимся помочь каждому клиенту раскрыть свою естественную красоту и обрести уверенность в себе. Наша команда профессионалов постоянно совершенствует свои навыки, чтобы предоставлять услуги высочайшего качества.</p>
+                    </div>
+
+                    <div class="text-center">
+                        <a href="{% url 'appointment_create' %}" class="btn btn-primary btn-lg">
+                            <i class="fas fa-calendar-plus me-2"></i>
+                            Записаться на приём
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %} 

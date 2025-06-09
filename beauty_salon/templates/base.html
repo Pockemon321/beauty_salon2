@@ -1,55 +1,24 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{% block title %}Beauty Salon{% endblock %}</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <title>{% block title %}Салон красоты{% endblock %}</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome -->
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
-    <style>
-        .navbar {
-            box-shadow: 0 2px 4px rgba(0,0,0,.1);
-        }
-        .navbar-brand {
-            font-size: 1.5rem;
-            font-weight: bold;
-            color: #ff69b4 !important;
-        }
-        .nav-link {
-            font-weight: 500;
-        }
-        .nav-link:hover {
-            color: #ff69b4 !important;
-        }
-        footer {
-            background-color: #f8f9fa;
-            padding: 2rem 0;
-            margin-top: 3rem;
-        }
-        .btn-primary {
-            background-color: #ff69b4;
-            border-color: #ff69b4;
-        }
-        .btn-primary:hover {
-            background-color: #ff4aa1;
-            border-color: #ff4aa1;
-        }
-        .btn-outline-primary {
-            color: #ff69b4;
-            border-color: #ff69b4;
-        }
-        .btn-outline-primary:hover {
-            background-color: #ff69b4;
-            border-color: #ff69b4;
-        }
-    </style>
+    <!-- Custom CSS -->
+    <link href="{% static 'css/style.css' %}" rel="stylesheet">
     {% block extra_css %}{% endblock %}
 </head>
 <body>
-    <nav class="navbar navbar-expand-lg navbar-light bg-white">
+    <!-- Навигационная панель -->
+    <nav class="navbar navbar-expand-lg navbar-light bg-light shadow-sm">
         <div class="container">
             <a class="navbar-brand" href="{% url 'home' %}">
-                <i class="fas fa-spa"></i> Beauty Salon
+                <span class="icon-animate">💅</span> Салон красоты
             </a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
                 <span class="navbar-toggler-icon"></span>
@@ -57,62 +26,54 @@
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav me-auto">
                     <li class="nav-item">
-                        <a class="nav-link" href="{% url 'services' %}">
-                            <i class="fas fa-concierge-bell"></i> Услуги
-                        </a>
+                        <a class="nav-link" href="{% url 'services' %}">Услуги</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="{% url 'masters' %}">
-                            <i class="fas fa-user-tie"></i> Мастера
-                        </a>
+                        <a class="nav-link" href="{% url 'masters' %}">Мастера</a>
                     </li>
-                    {% if user.is_authenticated %}
                     <li class="nav-item">
-                        <a class="nav-link" href="{% url 'appointment_create' %}">
-                            <i class="fas fa-calendar-plus"></i> Записаться
-                        </a>
+                        <a class="nav-link" href="{% url 'about' %}">О нас</a>
                     </li>
-                    {% endif %}
                 </ul>
                 <ul class="navbar-nav">
                     {% if user.is_authenticated %}
+                        {% if user.is_staff or user.role == 'admin' %}
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'admin_dashboard' %}">
+                                <i class="fas fa-cog"></i> Панель администратора
+                            </a>
+                        </li>
+                        {% endif %}
+                        {% if user.role == 'master' %}
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'master_dashboard' %}">
+                                <i class="fas fa-user-tie"></i> Кабинет мастера
+                            </a>
+                        </li>
+                        {% endif %}
                         <li class="nav-item dropdown">
                             <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" 
                                data-bs-toggle="dropdown" aria-expanded="false">
-                                <i class="fas fa-user-circle"></i> {{ user.get_full_name|default:user.username }}
+                                <i class="fas fa-user"></i> {{ user.get_full_name|default:user.username }}
                             </a>
                             <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
-                                <li>
-                                    <a class="dropdown-item" href="{% url 'profile' %}">
-                                        <i class="fas fa-user-cog"></i> Профиль
-                                    </a>
-                                </li>
-                                <li>
-                                    <a class="dropdown-item" href="{% url 'appointment_list' %}">
-                                        <i class="fas fa-calendar-alt"></i> Мои записи
-                                    </a>
-                                </li>
+                                <li><a class="dropdown-item" href="{% url 'profile' %}">Мой профиль</a></li>
+                                <li><a class="dropdown-item" href="{% url 'appointment_list' %}">Мои записи</a></li>
                                 <li><hr class="dropdown-divider"></li>
                                 <li>
                                     <form method="post" action="{% url 'logout' %}" class="d-inline">
                                         {% csrf_token %}
-                                        <button type="submit" class="dropdown-item">
-                                            <i class="fas fa-sign-out-alt"></i> Выйти
-                                        </button>
+                                        <button type="submit" class="dropdown-item">Выйти</button>
                                     </form>
                                 </li>
                             </ul>
                         </li>
                     {% else %}
                         <li class="nav-item">
-                            <a class="nav-link" href="{% url 'login' %}">
-                                <i class="fas fa-sign-in-alt"></i> Войти
-                            </a>
+                            <a class="nav-link" href="{% url 'login' %}">Войти</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="{% url 'register' %}">
-                                <i class="fas fa-user-plus"></i> Регистрация
-                            </a>
+                            <a class="nav-link" href="{% url 'register' %}">Регистрация</a>
                         </li>
                     {% endif %}
                 </ul>
@@ -120,52 +81,89 @@
         </div>
     </nav>
 
-    <main class="container my-4">
+    <!-- Основной контент -->
+    <div class="content-wrapper">
         {% if messages %}
-            {% for message in messages %}
-                <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
-                    {{ message }}
-                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                </div>
-            {% endfor %}
+            <div class="container mt-3">
+                {% for message in messages %}
+                    <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+                        {{ message }}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                {% endfor %}
+            </div>
         {% endif %}
+        {% block content %}{% endblock %}
+    </div>
 
-        {% block content %}
-        {% endblock %}
-    </main>
-
-    <footer class="bg-light">
+    <!-- Footer -->
+    <footer class="footer mt-5 py-3 bg-light">
         <div class="container">
             <div class="row">
-                <div class="col-md-4">
-                    <h5>Beauty Salon</h5>
-                    <p>Мы делаем вашу красоту нашим приоритетом</p>
-                </div>
-                <div class="col-md-4">
+                <div class="col-md-6">
                     <h5>Контакты</h5>
-                    <p>
-                        <i class="fas fa-phone"></i> +7 (XXX) XXX-XX-XX<br>
-                        <i class="fas fa-envelope"></i> info@beautysalon.ru<br>
-                        <i class="fas fa-map-marker-alt"></i> г. Москва, ул. Примерная, д. 1
-                    </p>
+                    <p>Телефон: +7 (495) 123-45-67</p>
+                    <p>Email: info@salon.ru</p>
+                    <p>Адрес: г. Москва, ул. Красоты, д. 15</p>
                 </div>
-                <div class="col-md-4">
-                    <h5>Мы в соцсетях</h5>
-                    <div class="social-links">
-                        <a href="#" class="text-dark me-3"><i class="fab fa-vk fa-lg"></i></a>
-                        <a href="#" class="text-dark me-3"><i class="fab fa-telegram fa-lg"></i></a>
-                        <a href="#" class="text-dark me-3"><i class="fab fa-instagram fa-lg"></i></a>
-                    </div>
+                <div class="col-md-6 text-md-end">
+                    <h5>Мы в социальных сетях</h5>
+                    <a href="#" class="text-dark me-2"><i class="fab fa-vk"></i></a>
+                    <a href="#" class="text-dark me-2"><i class="fab fa-instagram"></i></a>
+                    <a href="#" class="text-dark"><i class="fab fa-telegram"></i></a>
                 </div>
             </div>
-            <hr>
-            <div class="text-center">
-                <p>&copy; {% now "Y" %} Beauty Salon. Все права защищены.</p>
+            <div class="row mt-3">
+                <div class="col text-center">
+                    <p class="mb-0">&copy; 2024 Салон красоты. Все права защищены.</p>
+                </div>
             </div>
         </div>
     </footer>
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Bootstrap Bundle with Popper -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Добавляем анимации при загрузке страницы
+        document.addEventListener('DOMContentLoaded', function() {
+            // Анимация для карточек
+            document.querySelectorAll('.card').forEach(card => {
+                card.classList.add('animate-scale-in');
+            });
+
+            // Анимация для списков
+            document.querySelectorAll('.list-group-item').forEach((item, index) => {
+                item.style.animationDelay = `${index * 0.1}s`;
+                item.classList.add('animate-slide-in');
+            });
+
+            // Анимация для форм
+            document.querySelectorAll('form').forEach(form => {
+                form.classList.add('animate-fade-in');
+            });
+        });
+
+        // Анимация при переходе по ссылкам
+        document.querySelectorAll('a:not([href^="#"])').forEach(link => {
+            link.addEventListener('click', function(e) {
+                // Пропускаем ссылки, которые должны работать без анимации
+                if (this.getAttribute('target') === '_blank' || 
+                    this.getAttribute('href').startsWith('tel:') ||
+                    this.getAttribute('href').startsWith('mailto:')) {
+                    return;
+                }
+
+                e.preventDefault();
+                const href = this.getAttribute('href');
+                
+                document.querySelector('.content-wrapper').style.opacity = '0';
+                
+                setTimeout(() => {
+                    window.location.href = href;
+                }, 300);
+            });
+        });
+    </script>
     {% block extra_js %}{% endblock %}
 </body>
 </html>

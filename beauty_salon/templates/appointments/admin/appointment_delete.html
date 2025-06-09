@@ -1,0 +1,48 @@
+{% extends 'appointments/admin/base_admin.html' %}
+
+{% block admin_title %}Удаление записи #{{ appointment.id }}{% endblock %}
+
+{% block admin_content %}
+<div class="card shadow mb-4">
+    <div class="card-header py-3">
+        <h6 class="m-0 font-weight-bold text-danger">Подтверждение удаления</h6>
+    </div>
+    <div class="card-body">
+        <p class="mb-4">Вы действительно хотите удалить эту запись?</p>
+        
+        <div class="row mb-4">
+            <div class="col-md-6">
+                <h5>Клиент</h5>
+                <p>{{ appointment.client.get_full_name }}</p>
+            </div>
+            <div class="col-md-6">
+                <h5>Услуга</h5>
+                <p>{{ appointment.service.name }}</p>
+            </div>
+        </div>
+        
+        <div class="row mb-4">
+            <div class="col-md-6">
+                <h5>Мастер</h5>
+                <p>{{ appointment.master.name }}</p>
+            </div>
+            <div class="col-md-6">
+                <h5>Время записи</h5>
+                <p>{{ appointment.date }} {{ appointment.time }}</p>
+            </div>
+        </div>
+        
+        <form method="post">
+            {% csrf_token %}
+            <div class="row">
+                <div class="col-md-6">
+                    <a href="{% url 'admin_appointment_list' %}" class="btn btn-secondary w-100">Отмена</a>
+                </div>
+                <div class="col-md-6">
+                    <button type="submit" class="btn btn-danger w-100">Удалить</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %} 

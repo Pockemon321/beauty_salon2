@@ -1,0 +1,51 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+
+{% block title %}
+    {% if form.instance.pk %}
+        Редактирование мастера
+    {% else %}
+        Добавление мастера
+    {% endif %}
+{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-header">
+                    <h2 class="mb-0">
+                        {% if form.instance.pk %}
+                            <i class="fas fa-user-edit"></i> Редактирование мастера
+                        {% else %}
+                            <i class="fas fa-user-plus"></i> Добавление мастера
+                        {% endif %}
+                    </h2>
+                </div>
+                <div class="card-body">
+                    {% if form.instance.pk and form.instance.photo %}
+                        <div class="text-center mb-4">
+                            <img src="{{ form.instance.photo.url }}" alt="{{ form.instance.name }}" 
+                                 class="rounded-circle" style="width: 200px; height: 200px; object-fit: cover;">
+                        </div>
+                    {% endif %}
+
+                    <form method="post" enctype="multipart/form-data">
+                        {% csrf_token %}
+                        {{ form|crispy }}
+                        <div class="d-flex justify-content-between mt-4">
+                            <a href="{% url 'admin_masters_list' %}" class="btn btn-secondary">
+                                <i class="fas fa-arrow-left"></i> Назад
+                            </a>
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fas fa-save"></i> Сохранить
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %} 

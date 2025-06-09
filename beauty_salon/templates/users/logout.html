@@ -3,14 +3,17 @@
 {% block title %}Выход - Beauty Salon{% endblock %}
 
 {% block content %}
-<div class="container py-5">
+<div class="container py-5 animate-fade-in">
     <div class="row justify-content-center">
         <div class="col-md-8 col-lg-6">
-            <div class="card shadow">
-                <div class="card-body p-4 text-center">
+            <div class="card shadow animate-scale-in">
+                <div class="card-body p-5 text-center">
                     <h2 class="mb-4">Вы вышли из системы</h2>
                     <p class="mb-4">Спасибо за посещение нашего салона красоты!</p>
-                    <a href="{% url 'login' %}" class="btn btn-primary">Войти снова</a>
+                    <div class="d-grid gap-2">
+                        <a href="{% url 'login' %}" class="btn btn-primary btn-lg">Войти снова</a>
+                        <a href="{% url 'home' %}" class="btn btn-outline-primary">Вернуться на главную</a>
+                    </div>
                 </div>
             </div>
         </div>

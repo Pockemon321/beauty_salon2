@@ -1,0 +1,69 @@
+{% extends 'appointments/admin/base_admin.html' %}
+
+{% block admin_title %}Редактирование записи #{{ appointment.id }}{% endblock %}
+
+{% block admin_content %}
+<div class="card shadow mb-4">
+    <div class="card-header py-3">
+        <h6 class="m-0 font-weight-bold text-primary">Информация о записи</h6>
+    </div>
+    <div class="card-body">
+        <div class="row mb-4">
+            <div class="col-md-6">
+                <h5>Клиент</h5>
+                <p>{{ appointment.client.get_full_name }}</p>
+                <p>Email: {{ appointment.client.email }}</p>
+                <p>Телефон: {{ appointment.client.phone }}</p>
+            </div>
+            <div class="col-md-6">
+                <h5>Услуга</h5>
+                <p>{{ appointment.service.name }}</p>
+                <p>Стоимость: {{ appointment.service.price }} руб.</p>
+                <p>Длительность: {{ appointment.service.duration }} мин.</p>
+            </div>
+        </div>
+        <div class="row mb-4">
+            <div class="col-md-6">
+                <h5>Мастер</h5>
+                <p>{{ appointment.master.name }}</p>
+            </div>
+            <div class="col-md-6">
+                <h5>Время записи</h5>
+                <p>Дата: {{ appointment.date }}</p>
+                <p>Время: {{ appointment.time }}</p>
+            </div>
+        </div>
+        {% if appointment.notes %}
+        <div class="row mb-4">
+            <div class="col-12">
+                <h5>Дополнительные пожелания</h5>
+                <p>{{ appointment.notes }}</p>
+            </div>
+        </div>
+        {% endif %}
+        <form method="post">
+            {% csrf_token %}
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label for="status">Статус записи</label>
+                        <select name="status" id="status" class="form-select">
+                            {% for status_code, status_name in statuses %}
+                            <option value="{{ status_code }}" {% if appointment.status == status_code %}selected{% endif %}>
+                                {{ status_name }}
+                            </option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label>&nbsp;</label>
+                        <button type="submit" class="btn btn-primary w-100">Сохранить изменения</button>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %} 

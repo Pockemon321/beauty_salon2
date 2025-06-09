@@ -9,4 +9,9 @@ INSTALLED_APPS = [
     'services',
     'appointments',
     'django_extensions',
-] 
+]
+
+# Настройки аутентификации
+LOGIN_REDIRECT_URL = '/'  # Перенаправление на главную страницу после входа
+LOGIN_URL = 'login'  # URL для страницы входа
+LOGOUT_REDIRECT_URL = '/'  # Перенаправление на главную страницу после выхода 

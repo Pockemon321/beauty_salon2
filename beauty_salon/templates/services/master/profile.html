@@ -1,0 +1,89 @@
+{% extends 'services/master/base_master.html' %}
+
+{% block master_title %}Мой профиль{% endblock %}
+
+{% block master_content %}
+<div class="row">
+    <div class="col-md-4">
+        <div class="card shadow mb-4">
+            <div class="card-header py-3">
+                <h6 class="m-0 font-weight-bold text-primary">Фото профиля</h6>
+            </div>
+            <div class="card-body text-center">
+                {% if master.photo %}
+                <img src="{{ master.photo.url }}" alt="{{ master.name }}" class="img-profile rounded-circle mb-3" style="width: 200px; height: 200px; object-fit: cover;">
+                {% else %}
+                <img src="https://via.placeholder.com/200" alt="Placeholder" class="img-profile rounded-circle mb-3">
+                {% endif %}
+                <form method="post" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    <div class="mb-3">
+                        <input type="file" name="photo" class="form-control" accept="image/*">
+                    </div>
+                    <button type="submit" name="update_photo" class="btn btn-primary">Обновить фото</button>
+                </form>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-8">
+        <div class="card shadow mb-4">
+            <div class="card-header py-3">
+                <h6 class="m-0 font-weight-bold text-primary">Информация о мастере</h6>
+            </div>
+            <div class="card-body">
+                <form method="post">
+                    {% csrf_token %}
+                    <div class="mb-3">
+                        <label for="name" class="form-label">ФИО</label>
+                        <input type="text" class="form-control" id="name" value="{{ master.name }}" readonly>
+                    </div>
+                    <div class="mb-3">
+                        <label for="experience" class="form-label">Опыт работы (лет)</label>
+                        <input type="number" class="form-control" id="experience" name="experience" 
+                               value="{{ master.experience }}" min="0">
+                    </div>
+                    <div class="mb-3">
+                        <label for="description" class="form-label">О себе</label>
+                        <textarea class="form-control" id="description" name="description" 
+                                  rows="5">{{ master.description }}</textarea>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <label for="schedule_start" class="form-label">Начало рабочего дня</label>
+                            <input type="time" class="form-control" id="schedule_start" name="schedule_start" 
+                                   value="{{ master.schedule_start|time:'H:i' }}">
+                        </div>
+                        <div class="col-md-6">
+                            <label for="schedule_end" class="form-label">Конец рабочего дня</label>
+                            <input type="time" class="form-control" id="schedule_end" name="schedule_end" 
+                                   value="{{ master.schedule_end|time:'H:i' }}">
+                        </div>
+                    </div>
+                    <button type="submit" name="update_info" class="btn btn-primary">Сохранить изменения</button>
+                </form>
+            </div>
+        </div>
+        
+        <div class="card shadow">
+            <div class="card-header py-3">
+                <h6 class="m-0 font-weight-bold text-primary">Контактная информация</h6>
+            </div>
+            <div class="card-body">
+                <form method="post">
+                    {% csrf_token %}
+                    <div class="mb-3">
+                        <label for="email" class="form-label">Email</label>
+                        <input type="email" class="form-control" id="email" value="{{ master.user.email }}" readonly>
+                    </div>
+                    <div class="mb-3">
+                        <label for="phone" class="form-label">Телефон</label>
+                        <input type="tel" class="form-control" id="phone" value="{{ master.user.phone }}" readonly>
+                    </div>
+                    <p class="text-muted">Для изменения контактной информации обратитесь к администратору</p>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %} 

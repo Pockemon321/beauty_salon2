@@ -1,0 +1,110 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Управление мастерами{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1>
+            <i class="fas fa-user-tie"></i> Управление мастерами
+        </h1>
+        <a href="{% url 'admin_master_create' %}" class="btn btn-primary">
+            <i class="fas fa-plus"></i> Добавить мастера
+        </a>
+    </div>
+
+    {% if masters %}
+        <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+            {% for master in masters %}
+                <div class="col">
+                    <div class="card h-100">
+                        {% if master.photo %}
+                            <img src="{{ master.photo.url }}" class="card-img-top" alt="{{ master.name }}" style="height: 300px; object-fit: cover;">
+                        {% else %}
+                            <div class="card-img-top bg-light d-flex align-items-center justify-content-center" style="height: 300px;">
+                                <i class="fas fa-user-circle fa-6x text-secondary"></i>
+                            </div>
+                        {% endif %}
+                        <div class="card-body">
+                            <h5 class="card-title">{{ master.name }}</h5>
+                            <p class="card-text">
+                                <small class="text-muted">
+                                    <i class="fas fa-briefcase"></i> Опыт работы: {{ master.experience }} лет
+                                </small>
+                            </p>
+                            <p class="card-text">
+                                <strong>Специализация:</strong><br>
+                                {% for spec in master.specialization.all %}
+                                    <span class="badge bg-info">{{ spec.name }}</span>
+                                {% endfor %}
+                            </p>
+                            <p class="card-text">
+                                <strong>Услуги:</strong><br>
+                                {% for service in master.services.all %}
+                                    <span class="badge bg-secondary">{{ service.name }}</span>
+                                {% endfor %}
+                            </p>
+                            <p class="card-text">
+                                <small class="text-muted">
+                                    <i class="fas fa-clock"></i> График работы:<br>
+                                    {{ master.schedule_start|time:"H:i" }} - {{ master.schedule_end|time:"H:i" }}
+                                </small>
+                            </p>
+                            <p class="card-text">
+                                <span class="badge {% if master.is_active %}bg-success{% else %}bg-danger{% endif %}">
+                                    {% if master.is_active %}Активен{% else %}Не активен{% endif %}
+                                </span>
+                            </p>
+                        </div>
+                        <div class="card-footer bg-transparent">
+                            <div class="d-flex justify-content-between">
+                                <a href="{% url 'admin_master_edit' master.pk %}" class="btn btn-sm btn-outline-primary">
+                                    <i class="fas fa-edit"></i> Изменить
+                                </a>
+                                <a href="{% url 'admin_master_delete' master.pk %}" class="btn btn-sm btn-outline-danger">
+                                    <i class="fas fa-trash"></i> Удалить
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+
+        {% if masters.has_other_pages %}
+            <nav aria-label="Page navigation" class="mt-4">
+                <ul class="pagination justify-content-center">
+                    {% if masters.has_previous %}
+                        <li class="page-item">
+                            <a class="page-link" href="?page={{ masters.previous_page_number }}">Назад</a>
+                        </li>
+                    {% endif %}
+
+                    {% for num in masters.paginator.page_range %}
+                        {% if masters.number == num %}
+                            <li class="page-item active">
+                                <span class="page-link">{{ num }}</span>
+                            </li>
+                        {% else %}
+                            <li class="page-item">
+                                <a class="page-link" href="?page={{ num }}">{{ num }}</a>
+                            </li>
+                        {% endif %}
+                    {% endfor %}
+
+                    {% if masters.has_next %}
+                        <li class="page-item">
+                            <a class="page-link" href="?page={{ masters.next_page_number }}">Вперед</a>
+                        </li>
+                    {% endif %}
+                </ul>
+            </nav>
+        {% endif %}
+    {% else %}
+        <div class="alert alert-info">
+            <i class="fas fa-info-circle"></i> Мастера не найдены
+        </div>
+    {% endif %}
+</div>
+{% endblock %} 

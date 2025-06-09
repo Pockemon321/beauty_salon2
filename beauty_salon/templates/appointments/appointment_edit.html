@@ -1,0 +1,165 @@
+{% extends "base.html" %}
+
+{% block title %}Редактирование записи - Beauty Salon{% endblock %}
+
+{% block extra_css %}
+<style>
+    .edit-appointment-container {
+        min-height: calc(100vh - 300px);
+        padding: 3rem 0;
+    }
+    .edit-appointment-card {
+        border: none;
+        border-radius: 15px;
+        box-shadow: 0 0 20px rgba(0,0,0,0.1);
+    }
+    .edit-appointment-header {
+        background: linear-gradient(45deg, #ff69b4, #ff4aa1);
+        color: white;
+        border-radius: 15px 15px 0 0;
+        padding: 2rem;
+    }
+    .form-control {
+        border-radius: 10px;
+        padding: 0.8rem 1rem;
+        border: 1px solid #e0e0e0;
+    }
+    .form-control:focus {
+        box-shadow: 0 0 0 0.2rem rgba(255, 105, 180, 0.25);
+        border-color: #ff69b4;
+    }
+    .btn-save {
+        background: linear-gradient(45deg, #ff69b4, #ff4aa1);
+        border: none;
+        border-radius: 10px;
+        padding: 0.8rem 2rem;
+        font-weight: 600;
+        transition: all 0.3s ease;
+    }
+    .btn-save:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(255, 105, 180, 0.3);
+    }
+    .btn-cancel {
+        border-radius: 10px;
+        padding: 0.8rem 2rem;
+        font-weight: 600;
+        transition: all 0.3s ease;
+    }
+    .error-message {
+        color: #dc3545;
+        font-size: 0.875rem;
+        margin-top: 0.25rem;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="edit-appointment-container">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-md-8">
+                <div class="edit-appointment-card">
+                    <div class="edit-appointment-header text-center">
+                        <h2 class="mb-0">Редактирование записи</h2>
+                        <p class="mb-0 mt-2">Измените детали вашей записи</p>
+                    </div>
+                    <div class="card-body p-4">
+                        <form method="post">
+                            {% csrf_token %}
+                            
+                            <div class="mb-3">
+                                <label for="{{ form.service.id_for_label }}" class="form-label">{{ form.service.label }}</label>
+                                {{ form.service }}
+                                {% if form.service.errors %}
+                                    <div class="error-message">{{ form.service.errors.0 }}</div>
+                                {% endif %}
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="{{ form.master.id_for_label }}" class="form-label">{{ form.master.label }}</label>
+                                {{ form.master }}
+                                {% if form.master.errors %}
+                                    <div class="error-message">{{ form.master.errors.0 }}</div>
+                                {% endif %}
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="{{ form.date.id_for_label }}" class="form-label">{{ form.date.label }}</label>
+                                {{ form.date }}
+                                {% if form.date.errors %}
+                                    <div class="error-message">{{ form.date.errors.0 }}</div>
+                                {% endif %}
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="{{ form.time.id_for_label }}" class="form-label">{{ form.time.label }}</label>
+                                {{ form.time }}
+                                {% if form.time.errors %}
+                                    <div class="error-message">{{ form.time.errors.0 }}</div>
+                                {% endif %}
+                            </div>
+
+                            <div class="mb-4">
+                                <label for="{{ form.notes.id_for_label }}" class="form-label">{{ form.notes.label }}</label>
+                                {{ form.notes }}
+                                {% if form.notes.errors %}
+                                    <div class="error-message">{{ form.notes.errors.0 }}</div>
+                                {% endif %}
+                            </div>
+
+                            <div class="d-flex justify-content-between">
+                                <a href="{% url 'appointment_list' %}" class="btn btn-outline-secondary btn-cancel">
+                                    Отмена
+                                </a>
+                                <button type="submit" class="btn btn-save text-white">
+                                    Сохранить изменения
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const serviceSelect = document.getElementById('{{ form.service.id_for_label }}');
+        const masterSelect = document.getElementById('{{ form.master.id_for_label }}');
+
+        // Функция для обновления списка мастеров
+        function updateMasters() {
+            const serviceId = serviceSelect.value;
+            if (!serviceId) return;
+
+            fetch(`/appointments/get-masters/?service_id=${serviceId}`)
+                .then(response => response.json())
+                .then(data => {
+                    // Сохраняем текущего выбранного мастера
+                    const currentMaster = masterSelect.value;
+                    
+                    // Очищаем список мастеров
+                    masterSelect.innerHTML = '';
+                    
+                    // Добавляем новых мастеров
+                    data.masters.forEach(master => {
+                        const option = new Option(master.name, master.id);
+                        masterSelect.add(option);
+                    });
+                    
+                    // Пытаемся восстановить выбранного мастера
+                    if (currentMaster) {
+                        masterSelect.value = currentMaster;
+                    }
+                });
+        }
+
+        // Обработчик изменения услуги
+        serviceSelect.addEventListener('change', updateMasters);
+    });
+</script>
+{% endblock %} 
